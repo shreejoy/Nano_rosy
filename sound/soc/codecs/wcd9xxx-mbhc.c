@@ -398,7 +398,7 @@ static bool __wcd9xxx_switch_micbias(struct wcd9xxx_mbhc *mbhc,
 		pr_debug("%s: VDDIO switch enabled\n", __func__);
 	} else if (!vddio_switch && mbhc->mbhc_micbias_switched) {
 		if ((!checkpolling || mbhc->polling_active) &&
-		    restartpolling)
+		    restartpolling) {
 			wcd9xxx_pause_hs_polling(mbhc);
 
 			snd_soc_update_bits(codec, WCD9XXX_A_MAD_ANA_CTRL,
@@ -444,6 +444,7 @@ static bool __wcd9xxx_switch_micbias(struct wcd9xxx_mbhc *mbhc,
 					WCD9XXX_A_CDC_MBHC_VOLT_B10_CTL,
 					(d->v_brh[MBHC_V_IDX_CFILT] >> 8) &
 					0xFF);
+				}
 			}
 			pr_debug("%s: Programmed MBHC thresholds to MICBIAS\n",
 					__func__);

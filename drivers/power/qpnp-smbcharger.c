@@ -8719,7 +8719,7 @@ static void period_update(struct work_struct *work)
 		return;
 	}
 
-	if (smbchg_debug_mask == 0xFF)
+	if (smbchg_debug_mask == 0xFF) {
 		dump_regs(chip);
 
 		temp		=	get_prop_batt_temp(chip)/10;
@@ -8736,6 +8736,7 @@ static void period_update(struct work_struct *work)
 		vbus = prop.intval;
 
 		printk_counter++;
+	}
 		/*if heatbeat_ms is bigger than 500ms,must output the logs directly.*/
 		if ((period_ms >= 500) || (abs(temp-old_temp) >= 1) || (old_cap != cap) || (old_status != status)
 		 || (old_present != present) || (old_usb_present != usb_present) || (printk_counter >= 5)) {

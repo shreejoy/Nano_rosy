@@ -234,7 +234,7 @@ static int fts_ft6x36gu_get_app_bin_file_ver(struct i2c_client *client,
 	}
 
 	if (fw->size < APP_FILE_MIN_SIZE || fw->size > APP_FILE_MAX_SIZE)
-		FTS_ERROR("[UPGRADE]: FW length(%x) error", fw->size);
+		FTS_ERROR("[UPGRADE]: FW length(%zu) error", fw->size);
 	else
 		fw_ver = fw->data[APP_FILE_VER_MAPPING];
 
@@ -537,7 +537,7 @@ static int fts_ft6x36gu_upgrade_with_app_i_file(struct i2c_client *client)
 	fw_len = g_fw_len;
 	fw_buf = g_fw_file;
 	if (fw_len < APP_FILE_MIN_SIZE || fw_len > APP_FILE_MAX_SIZE) {
-		FTS_ERROR("[UPGRADE]: FW length(%x) error", fw_len);
+		FTS_ERROR("[UPGRADE]: FW length(%zu) error", fw_len);
 		return -EIO;
 	}
 
@@ -575,7 +575,7 @@ static int fts_ft6x36gu_upgrade_with_app_bin_file(struct i2c_client *client,
 	}
 
 	if (fw->size < APP_FILE_MIN_SIZE || fw->size > APP_FILE_MAX_SIZE) {
-		FTS_ERROR("[UPGRADE]: app.bin length(%x) error, upgrade fail",
+		FTS_ERROR("[UPGRADE]: app.bin length(%zu) error, upgrade fail",
 							fwsize);
 		goto ERROR_BIN;
 	}
