@@ -60,13 +60,13 @@
 #include <linux/tick.h>
 #include <linux/version.h>
 
-// #define ENABLE_SNAP_THERMAL_SUPPORT		// ZZ: Snapdragon temperature tripping support
+#define ENABLE_SNAP_THERMAL_SUPPORT		// ZZ: Snapdragon temperature tripping support
 
 #if defined(CONFIG_THERMAL_TSENS8974) || defined(CONFIG_THERMAL_TSENS8960) && defined(ENABLE_SNAP_THERMAL_SUPPORT) // ZZ: Snapdragon temperature sensor
 #include <linux/msm_tsens.h>
 #endif /* defined(CONFIG_THERMAL_TSENS8974)... */
 
-// #define ENABLE_INPUTBOOSTER			// ZZ: enable/disable inputbooster support
+#define ENABLE_INPUTBOOSTER			// ZZ: enable/disable inputbooster support
 // #define ENABLE_WORK_RESTARTLOOP		// ZZ: enable/disable restart loop for touchboost (DO NOT ENABLE IN THIS VERSION -> NOT STABLE YET!)
 
 #ifdef ENABLE_INPUTBOOSTER
@@ -75,16 +75,16 @@
 #endif /* ENABLE_INPUTBOOSTER */
 
 // Yank: enable/disable sysfs interface to display current zzmoove version
-#define ZZMOOVE_VERSION "1.0 beta8"
+#define ZZMOOVE_VERSION "1.0 beta8-rosy"
 
 // ZZ: support for 2,4,6 or 8 cores (this will enable/disable hotplug threshold tuneables and limit hotplug max limit tuneable)
 #define MAX_CORES					(8)
 
 // ZZ: enable/disable hotplug support
-// #define ENABLE_HOTPLUGGING
+#define ENABLE_HOTPLUGGING
 
 // ZZ: enable support for native hotplugging on snapdragon platform
-// #define SNAP_NATIVE_HOTPLUGGING
+#define SNAP_NATIVE_HOTPLUGGING
 
 // ZZ: enable for sources with backported cpufreq implementation of 3.10 kernel
 // #define CPU_IDLE_TIME_IN_CPUFREQ
@@ -101,7 +101,7 @@
 // ZZ: include profiles header file and set name for 'custom' profile (informational for a changed profile value)
 #ifdef ENABLE_PROFILES_SUPPORT
 #include "cpufreq_zzmoove_profiles.h"
-#define DEF_PROFILE_NUMBER				(0)	// ZZ: default profile number (profile = 0 = 'none' = tuneable mode)
+#define DEF_PROFILE_NUMBER				(6)	// ZZ: default profile number (profile = 0 = 'none' = tuneable mode)
 static char custom_profile[20] = "custom";			// ZZ: name to show in sysfs if any profile value has changed
 
 // ff: allows tuneables to be tweaked without reverting to "custom" profile
@@ -3035,9 +3035,10 @@ static ssize_t store_sampling_rate_idle_delay(struct kobject *a, struct attribut
 #endif /* ENABLE_PROFILES_SUPPORT */
 	    return -EINVAL;
 
-	if (input == 0)
+	if (input == 0) {
 	    sampling_rate_step_up_delay = 0;
 	    sampling_rate_step_down_delay = 0;
+        }
 
 #ifdef ENABLE_PROFILES_SUPPORT
 	// ZZ: set profile number to 0 and profile name to custom mode if value has changed
@@ -7742,8 +7743,9 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 #endif /* ENABLE_SNAP_THERMAL_SUPPORT */
 
 	    // ZZ: Sampling down momentum - if momentum is inactive switch to 'down_skip' method
-	    if (zz_sampling_down_max_mom == 0 && zz_sampling_down_factor > 1)
+	    if (zz_sampling_down_max_mom == 0 && zz_sampling_down_factor > 1) {
 		this_dbs_info->down_skip = 0;
+                }
 
 		// ZZ: Frequency Limit: if we are at freq_limit break out early
 		if (dbs_tuners_ins.freq_limit != 0
@@ -7765,10 +7767,11 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		return;
 
 	    // ZZ: Sampling down momentum - if momentum is active and we are switching to max speed, apply sampling_down_factor
-	    if (zz_sampling_down_max_mom != 0 && policy->cur < policy->max)
+	    if (zz_sampling_down_max_mom != 0 && policy->cur < policy->max) {
 		this_dbs_info->rate_mult = zz_sampling_down_factor;
 
 		this_dbs_info->requested_freq = zz_get_next_freq(policy->cur, 1, max_load);
+                }
 
 		if (dbs_tuners_ins.freq_limit != 0
 			&& this_dbs_info->requested_freq > dbs_tuners_ins.freq_limit) {
@@ -7910,10 +7913,11 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	}
 
 	// ZZ: Scaling fastdown threshold (ffolkes)
-	if (!suspend_flag && dbs_tuners_ins.scaling_fastdown_freq != 0 && policy->cur > dbs_tuners_ins.scaling_fastdown_freq)
+	if (!suspend_flag && dbs_tuners_ins.scaling_fastdown_freq != 0 && policy->cur > dbs_tuners_ins.scaling_fastdown_freq) {
 	    scaling_down_threshold = dbs_tuners_ins.scaling_fastdown_down_threshold;
-	else
+        } else {
 	    scaling_down_threshold = dbs_tuners_ins.down_threshold;
+        }
 
 
 	// ff: if the up_threshold was boosted, we need to adjust this, too
@@ -8789,7 +8793,7 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 		    // policy latency is in nS. Convert it to uS first
 		    latency = policy->cpuinfo.transition_latency / 1000;
 		    if (latency == 0)
-			latency = 1;
+                                latency = 1;
 
 			rc = sysfs_create_group(cpufreq_global_kobject,
 						&dbs_attr_group);
