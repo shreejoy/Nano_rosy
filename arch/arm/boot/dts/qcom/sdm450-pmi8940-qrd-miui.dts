@@ -2732,7 +2732,7 @@
 
 				qcom,gpu-pwrlevel@0 {
 					reg = <0x00>;
-					qcom,gpu-freq = <0x23c34600>;
+					qcom,gpu-freq = <0x2c1b8100>;
 					qcom,bus-freq = <0x0a>;
 					qcom,bus-min = <0x0a>;
 					qcom,bus-max = <0x0a>;
